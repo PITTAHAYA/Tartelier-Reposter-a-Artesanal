@@ -21,36 +21,39 @@ const withBase = (path) => `${appBase.replace(/\/?$/, '/')}${path.replace(/^\/+/
 const asset = (name) => withBase(`assets/${name.replace('.png', '.jpg')}`);
 const menuPdfUrl = withBase('assets/menu-tartelier-julio-2025.pdf');
 
+// NOTA: los archivos de imagen tienen nombres que NO coinciden con su contenido
+// real (vinieron mezclados). Cada clave apunta al archivo que SÍ contiene la foto
+// correcta; el comentario indica qué muestra de verdad ese archivo.
 const photos = {
-  hero: asset('dia-tartelier.png'),
-  espresso: asset('espresso.png'),
-  limonadaRosas: asset('limonada-rosas.png'),
-  bebidaFria: asset('limonada-viernes.png'),
-  latteCapas: asset('latte-capas.png'),
-  fragolina: asset('fragolina.png'),
-  noisette: asset('noisette.png'),
-  citron: asset('citron.png'),
-  euphoria: asset('euphoria-postre.png'),
-  exotique: asset('exotique.png'),
-  strudel: asset('strudel-euphoria.png'),
-  cookie: asset('cookie.png'),
-  chocolate: asset('postre-chocolate.png'),
-  postresMesa: asset('postres-plato.png'),
-  postresQuiz: asset('postres-quiz.png'),
-  brunchParisino: asset('desayuno-parisino.png'),
-  brunchTartelier: asset('desayuno-tartelier.png'),
-  bagelRanchero: asset('bagel-ranchero.png'),
-  bagelPhiladelphia: asset('bagel-philadelphia.png'),
-  bagel: asset('bagel.png'),
-  pannecook: asset('pannecook.png'),
-  almuerzos: asset('almuerzos-opciones.png'),
-  sopaCebolla: asset('sopa-cebolla.png'),
-  ensaladaCaprese: asset('ensalada-caprese.png'),
-  ensaladaCesar: asset('ensalada-cesar.png'),
-  bocataCaprese: asset('bocata-caprese.png'),
-  sanduchePollo: asset('sanduche-pollo.png'),
-  citronExotique: asset('citron-exotique.png'),
-  noisetteFragolina: asset('noisette-fragolina.png'),
+  hero: asset('pannecook.jpg'), // "Un día entero en tartelier" (foto principal)
+  espresso: asset('bocata-caprese.jpg'), // Espresso
+  limonadaRosas: asset('exotique-close.jpg'), // Limonada de rosas 10/10
+  bebidaFria: asset('sanduche-pollo.jpg'), // Bebida fría morada (limonada)
+  latteCapas: asset('bagel-philadelphia.jpg'), // Latte en capas
+  fragolina: asset('desayuno-tartelier.jpg'), // Postre Fragolina
+  noisette: asset('bagel-ranchero.jpg'), // Postre Noisette
+  citron: asset('ensalada-cesar.jpg'), // Postre Citrón
+  euphoria: asset('ensalada-caprese.jpg'), // Postre Euphoria
+  exotique: asset('sopa-cebolla.jpg'), // Postre Exotique
+  strudel: asset('strudel-euphoria.jpg'), // Strudel de manzana (collage)
+  cookie: asset('postre-cacao.jpg'), // Chocolate Chip Cookie
+  chocolate: asset('desayuno-parisino.jpg'), // Postre de chocolate
+  postresMesa: asset('bagel.jpg'), // Collage de postres de autor
+  postresQuiz: asset('postres-plato.jpg'), // Collage vitrina de postres
+  brunchParisino: asset('postre-chocolate.jpg'), // Desayuno Parisino
+  brunchTartelier: asset('fragolina.jpg'), // Desayuno Tartelier
+  bagelRanchero: asset('noisette.jpg'), // Bagel Ranchero
+  bagelPhiladelphia: asset('latte-capas.jpg'), // Bagel Philadelphia
+  bagel: asset('postres-quiz.jpg'), // Bagel (semillas)
+  pannecook: asset('dia-tartelier.jpg'), // Pannecook (pan cuenco)
+  almuerzos: asset('noisette-close.jpg'), // Collage "Tantas opciones de almuerzo"
+  sopaCebolla: asset('exotique.jpg'), // Sopa de cebolla
+  ensaladaCaprese: asset('euphoria.jpg'), // Ensalada Caprese
+  ensaladaCesar: asset('citron.jpg'), // Ensalada César
+  bocataCaprese: asset('espresso.jpg'), // Bocata Caprese
+  sanduchePollo: asset('limonada-viernes.jpg'), // Sánduche de pollo
+  citronExotique: asset('noisette-fragolina.jpg'), // Collage "Citrón o Exotique"
+  noisetteFragolina: asset('citron-exotique.jpg'), // Collage "Noisette o Fragolina"
 };
 
 const TARTELIER_INSTAGRAM_URL = 'https://www.instagram.com/tartelier_ec/';
@@ -545,7 +548,7 @@ function GhostButton({ children, href, light = false, ...props }) {
 function ProductCard({ item, compact = false }) {
   return (
     <article className="group overflow-hidden rounded-lg bg-ivory shadow-lift ring-1 ring-navy/8">
-      <div className={`relative overflow-hidden ${compact ? 'aspect-[4/3]' : 'aspect-[4/5]'}`}>
+      <div className="relative aspect-[4/5] overflow-hidden">
         <SafeImage
           src={item.image}
           alt={item.name}
@@ -878,8 +881,8 @@ function DrinksSection() {
           <div className="grid gap-5 sm:grid-cols-2">
             {drinks.map(({ name, image, copy, price, icon: Icon }) => (
               <article key={name} className="flex min-h-full flex-col overflow-hidden rounded-lg bg-cream shadow-lift ring-1 ring-navy/8">
-                <div className="relative aspect-[16/11] overflow-hidden">
-                  <SafeImage src={image} alt={name} loading="lazy" className="h-full w-full object-cover photo-finish" />
+                <div className="relative aspect-[4/5] overflow-hidden">
+                  <SafeImage src={image} alt={name} loading="lazy" className="h-full w-full object-cover object-center photo-finish" />
                   <span className="absolute left-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-ivory/92 text-navy">
                     <Icon className="h-5 w-5" aria-hidden="true" />
                   </span>
