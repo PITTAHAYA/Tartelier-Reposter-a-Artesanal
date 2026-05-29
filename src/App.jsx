@@ -16,7 +16,10 @@ import {
   X,
 } from 'lucide-react';
 
-const asset = (name) => `/assets/${name.replace('.png', '.jpg')}`;
+const appBase = import.meta.env.BASE_URL || '/';
+const withBase = (path) => `${appBase.replace(/\/?$/, '/')}${path.replace(/^\/+/, '')}`;
+const asset = (name) => withBase(`assets/${name.replace('.png', '.jpg')}`);
+const menuPdfUrl = withBase('assets/menu-tartelier-julio-2025.pdf');
 
 const photos = {
   hero: asset('pannecook.png'),
@@ -391,11 +394,52 @@ function normalizePath(pathname) {
   return cleanPath || '/';
 }
 
+function basePath() {
+  try {
+    return new URL(appBase, window.location.origin).pathname;
+  } catch {
+    return appBase;
+  }
+}
+
+function stripBasePath(pathname) {
+  const cleanPath = normalizePath(pathname);
+  const cleanBase = normalizePath(basePath());
+
+  if (cleanBase !== '/' && (cleanPath === cleanBase || cleanPath.startsWith(`${cleanBase}/`))) {
+    return normalizePath(cleanPath.slice(cleanBase.length) || '/');
+  }
+
+  return cleanPath;
+}
+
+function routeToUrl(pathname) {
+  const routePath = normalizePath(pathname);
+  const cleanBase = normalizePath(basePath());
+
+  if (cleanBase === '/') {
+    return routePath;
+  }
+
+  return `${cleanBase}${routePath}`;
+}
+
+function readRoutePath() {
+  if (window.location.search.startsWith('?/')) {
+    const redirectedPath = window.location.search.slice(1).split('&')[0].replace(/~and~/g, '&');
+    const routePath = normalizePath(redirectedPath);
+    window.history.replaceState({}, '', `${routeToUrl(routePath)}${window.location.hash}`);
+    return routePath;
+  }
+
+  return stripBasePath(window.location.pathname);
+}
+
 function usePathname() {
-  const [pathname, setPathname] = useState(() => normalizePath(window.location.pathname));
+  const [pathname, setPathname] = useState(() => readRoutePath());
 
   useEffect(() => {
-    const handleNavigation = () => setPathname(normalizePath(window.location.pathname));
+    const handleNavigation = () => setPathname(readRoutePath());
     window.addEventListener('popstate', handleNavigation);
     return () => window.removeEventListener('popstate', handleNavigation);
   }, []);
@@ -405,6 +449,7 @@ function usePathname() {
 
 function SmartLink({ href, children, className, onClick, ...props }) {
   const isInternal = href?.startsWith('/') && !href.startsWith('//');
+  const renderedHref = isInternal ? routeToUrl(href) : href;
 
   function handleClick(event) {
     onClick?.(event);
@@ -414,15 +459,15 @@ function SmartLink({ href, children, className, onClick, ...props }) {
 
     event.preventDefault();
     const nextPath = normalizePath(href);
-    if (normalizePath(window.location.pathname) !== nextPath) {
-      window.history.pushState({}, '', nextPath);
+    if (stripBasePath(window.location.pathname) !== nextPath) {
+      window.history.pushState({}, '', routeToUrl(nextPath));
       window.dispatchEvent(new PopStateEvent('popstate'));
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   return (
-    <a href={href} className={className} onClick={handleClick} {...props}>
+    <a href={renderedHref} className={className} onClick={handleClick} {...props}>
       {children}
     </a>
   );
@@ -721,7 +766,7 @@ function FullMenuSection() {
               Precios tomados del menú Tartelier proporcionado. La selección mantiene una lectura compacta para web y deja los postres de autor sin precio cuando el PDF no los especifica.
             </p>
             <a
-              href="/assets/menu-tartelier-julio-2025.pdf"
+              href={menuPdfUrl}
               target="_blank"
               rel="noreferrer"
               className="mt-6 inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/35 px-6 text-sm font-semibold text-white transition hover:bg-white/12"
