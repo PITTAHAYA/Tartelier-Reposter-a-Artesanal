@@ -22,35 +22,35 @@ const asset = (name) => withBase(`assets/${name.replace('.png', '.jpg')}`);
 const menuPdfUrl = withBase('assets/menu-tartelier-julio-2025.pdf');
 
 const photos = {
-  hero: asset('pannecook.png'),
-  espresso: asset('bocata-caprese.png'),
-  limonadaRosas: asset('exotique-close.png'),
-  bebidaFria: asset('sanduche-pollo.png'),
-  latteCapas: asset('bagel-philadelphia.png'),
-  fragolina: asset('desayuno-tartelier.png'),
-  noisette: asset('almuerzos-opciones.png'),
-  citron: asset('ensalada-cesar.png'),
+  hero: asset('dia-tartelier.png'),
+  espresso: asset('espresso.png'),
+  limonadaRosas: asset('limonada-rosas.png'),
+  bebidaFria: asset('limonada-viernes.png'),
+  latteCapas: asset('latte-capas.png'),
+  fragolina: asset('fragolina.png'),
+  noisette: asset('noisette.png'),
+  citron: asset('citron.png'),
   euphoria: asset('euphoria-postre.png'),
-  exotique: asset('limonada-rosas.png'),
-  strudel: asset('postres-plato.png'),
-  cookie: asset('postre-cacao.png'),
-  chocolate: asset('desayuno-parisino.png'),
-  postresMesa: asset('strudel-euphoria.png'),
-  postresQuiz: asset('bagel.png'),
-  brunchParisino: asset('postre-chocolate.png'),
-  brunchTartelier: asset('fragolina.png'),
-  bagelRanchero: asset('noisette.png'),
-  bagelPhiladelphia: asset('latte-capas.png'),
-  bagel: asset('postres-quiz.png'),
-  pannecook: asset('dia-tartelier.png'),
-  almuerzos: asset('noisette-close.png'),
-  sopaCebolla: asset('exotique.png'),
-  ensaladaCaprese: asset('euphoria.png'),
-  ensaladaCesar: asset('citron.png'),
-  bocataCaprese: asset('espresso.png'),
-  sanduchePollo: asset('limonada-viernes.png'),
-  citronExotique: asset('noisette-fragolina.png'),
-  noisetteFragolina: asset('citron-exotique.png'),
+  exotique: asset('exotique.png'),
+  strudel: asset('strudel-euphoria.png'),
+  cookie: asset('cookie.png'),
+  chocolate: asset('postre-chocolate.png'),
+  postresMesa: asset('postres-plato.png'),
+  postresQuiz: asset('postres-quiz.png'),
+  brunchParisino: asset('desayuno-parisino.png'),
+  brunchTartelier: asset('desayuno-tartelier.png'),
+  bagelRanchero: asset('bagel-ranchero.png'),
+  bagelPhiladelphia: asset('bagel-philadelphia.png'),
+  bagel: asset('bagel.png'),
+  pannecook: asset('pannecook.png'),
+  almuerzos: asset('almuerzos-opciones.png'),
+  sopaCebolla: asset('sopa-cebolla.png'),
+  ensaladaCaprese: asset('ensalada-caprese.png'),
+  ensaladaCesar: asset('ensalada-cesar.png'),
+  bocataCaprese: asset('bocata-caprese.png'),
+  sanduchePollo: asset('sanduche-pollo.png'),
+  citronExotique: asset('citron-exotique.png'),
+  noisetteFragolina: asset('noisette-fragolina.png'),
 };
 
 const TARTELIER_INSTAGRAM_URL = 'https://www.instagram.com/tartelier_ec/';
@@ -379,6 +379,29 @@ function Monogram({ light = false }) {
   );
 }
 
+function SafeImage({ src, alt, className, loading = 'lazy', fallback = photos.hero, ...props }) {
+  const [currentSrc, setCurrentSrc] = useState(src);
+
+  useEffect(() => {
+    setCurrentSrc(src);
+  }, [src]);
+
+  return (
+    <img
+      src={currentSrc}
+      alt={alt}
+      loading={loading}
+      className={className}
+      onError={() => {
+        if (currentSrc !== fallback) {
+          setCurrentSrc(fallback);
+        }
+      }}
+      {...props}
+    />
+  );
+}
+
 function SectionIntro({ eyebrow, title, copy, align = 'left' }) {
   return (
     <div className={`mx-auto max-w-3xl ${align === 'center' ? 'text-center' : ''}`}>
@@ -511,7 +534,7 @@ function ProductCard({ item, compact = false }) {
   return (
     <article className="group overflow-hidden rounded-lg bg-ivory shadow-lift ring-1 ring-navy/8">
       <div className={`relative overflow-hidden ${compact ? 'aspect-[4/3]' : 'aspect-[4/5]'}`}>
-        <img
+        <SafeImage
           src={item.image}
           alt={item.name}
           loading="lazy"
@@ -660,12 +683,12 @@ function BrandSection() {
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4">
-          <img
+          <SafeImage
             src={photos.postresMesa}
             alt="Selección de postres de autor Tartelier"
             className="aspect-[4/5] rounded-lg object-cover shadow-lift"
           />
-          <img
+          <SafeImage
             src={photos.limonadaRosas}
             alt="Limonada de rosas Tartelier"
             className="mt-10 aspect-[4/5] rounded-lg object-cover shadow-lift"
@@ -727,7 +750,7 @@ function HomeHighlights() {
               className="group overflow-hidden rounded-lg bg-ivory shadow-lift ring-1 ring-navy/8"
             >
               <div className="aspect-[4/5] overflow-hidden">
-                <img
+                <SafeImage
                   src={item.image}
                   alt={item.title}
                   loading="lazy"
@@ -843,7 +866,7 @@ function DrinksSection() {
             {drinks.map(({ name, image, copy, price, icon: Icon }) => (
               <article key={name} className="flex min-h-full flex-col overflow-hidden rounded-lg bg-cream shadow-lift ring-1 ring-navy/8">
                 <div className="relative aspect-[16/11] overflow-hidden">
-                  <img src={image} alt={name} loading="lazy" className="h-full w-full object-cover photo-finish" />
+                  <SafeImage src={image} alt={name} loading="lazy" className="h-full w-full object-cover photo-finish" />
                   <span className="absolute left-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-ivory/92 text-navy">
                     <Icon className="h-5 w-5" aria-hidden="true" />
                   </span>
@@ -905,7 +928,7 @@ function LunchSection() {
           {lunchItems.map((item) => (
             <article key={item.name} className="group overflow-hidden rounded-lg bg-cream shadow-lift ring-1 ring-navy/8 lg:odd:translate-y-8">
               <div className="aspect-[4/5] overflow-hidden">
-                <img src={item.image} alt={item.name} loading="lazy" className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]" />
+                <SafeImage src={item.image} alt={item.name} loading="lazy" className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]" />
               </div>
               <div className="p-5">
                 <p className="text-xs font-bold uppercase tracking-[0.22em] text-honey">Almuerzo</p>
@@ -928,7 +951,7 @@ function ExperienceSection() {
     <section className="grain overflow-hidden bg-linen px-5 py-20 md:px-8 md:py-28">
       <div className="relative z-10 mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
         <div className="relative">
-          <img
+          <SafeImage
             src={photos.almuerzos}
             alt="Mesa de almuerzo Tartelier con varias opciones saladas"
             loading="lazy"
@@ -982,7 +1005,7 @@ function GallerySection() {
                 index === 0 || index === 2 ? 'md:col-span-2 md:row-span-2' : ''
               }`}
             >
-              <img src={item.image} alt={item.label} loading="lazy" className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]" />
+              <SafeImage src={item.image} alt={item.label} loading="lazy" className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]" />
               <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy/72 to-transparent p-5 font-display text-2xl text-white">
                 {item.label}
               </figcaption>
@@ -1015,7 +1038,7 @@ function LocationSection() {
           </div>
         </div>
         <div className="grid gap-5 sm:grid-cols-2">
-          <img src={photos.latteCapas} alt="Bebida en capas Tartelier" loading="lazy" className="aspect-[4/5] rounded-lg object-cover shadow-lift" />
+          <SafeImage src={photos.latteCapas} alt="Bebida en capas Tartelier" loading="lazy" className="aspect-[4/5] rounded-lg object-cover shadow-lift" />
           <div className="rounded-lg border border-navy/10 bg-ivory p-8 shadow-lift">
             <Star className="h-7 w-7 text-honey" aria-hidden="true" />
             <p className="mt-6 font-display text-4xl leading-tight text-navy">Para una mañana lenta, un almuerzo bonito o ese postrecito que mejora el día.</p>
