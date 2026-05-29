@@ -15,10 +15,10 @@
         .split('/')
         .slice(pathSegmentsToKeep)
         .join('/')
-        .replace(/&/g, '~and~');
+        .replace(/^\/+/, '');
 
       locationData.replace(
-        `${locationData.protocol}//${locationData.hostname}${locationData.port ? `:${locationData.port}` : ''}${basePath}/?/${routePath}${locationData.search ? `&${locationData.search.slice(1).replace(/&/g, '~and~')}` : ''}${locationData.hash}`
+        `${locationData.protocol}//${locationData.hostname}${locationData.port ? `:${locationData.port}` : ''}${basePath}/#/${routePath || ''}${locationData.search || ''}`
       );
     </script>
   </head>

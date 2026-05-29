@@ -439,23 +439,30 @@ function stripBasePath(pathname) {
 function routeToUrl(pathname) {
   const routePath = normalizePath(pathname);
   const cleanBase = normalizePath(basePath());
+  const rootUrl = cleanBase === '/' ? '/' : `${cleanBase}/`;
 
-  if (cleanBase === '/') {
-    return routePath;
-  }
-
-  return `${cleanBase}${routePath}`;
+  return `${rootUrl}#${routePath}`;
 }
 
 function readRoutePath() {
+  const hashPath = window.location.hash.replace(/^#/, '').split('?')[0];
+  if (hashPath) {
+    return normalizePath(hashPath);
+  }
+
   if (window.location.search.startsWith('?/')) {
     const redirectedPath = window.location.search.slice(1).split('&')[0].replace(/~and~/g, '&');
     const routePath = normalizePath(redirectedPath);
-    window.history.replaceState({}, '', `${routeToUrl(routePath)}${window.location.hash}`);
+    window.history.replaceState({}, '', routeToUrl(routePath));
     return routePath;
   }
 
-  return stripBasePath(window.location.pathname);
+  const routePath = stripBasePath(window.location.pathname);
+  if (routePath !== '/') {
+    window.history.replaceState({}, '', routeToUrl(routePath));
+  }
+
+  return routePath;
 }
 
 function usePathname() {
@@ -464,7 +471,12 @@ function usePathname() {
   useEffect(() => {
     const handleNavigation = () => setPathname(readRoutePath());
     window.addEventListener('popstate', handleNavigation);
-    return () => window.removeEventListener('popstate', handleNavigation);
+    window.addEventListener('hashchange', handleNavigation);
+
+    return () => {
+      window.removeEventListener('popstate', handleNavigation);
+      window.removeEventListener('hashchange', handleNavigation);
+    };
   }, []);
 
   return pathname;
@@ -482,7 +494,7 @@ function SmartLink({ href, children, className, onClick, ...props }) {
 
     event.preventDefault();
     const nextPath = normalizePath(href);
-    if (stripBasePath(window.location.pathname) !== nextPath) {
+    if (readRoutePath() !== nextPath) {
       window.history.pushState({}, '', routeToUrl(nextPath));
       window.dispatchEvent(new PopStateEvent('popstate'));
     }
@@ -630,9 +642,10 @@ function Header({ currentPath }) {
 function Hero() {
   return (
     <section id="inicio" className="relative min-h-[88svh] overflow-hidden pt-20 text-white">
-      <img
+      <SafeImage
         src={photos.hero}
         alt="Mesa Tartelier con desayuno, bebida fría y postres"
+        loading="eager"
         className="absolute inset-0 h-full w-full object-cover object-[center_62%] photo-finish"
       />
       <div className="hero-mask absolute inset-0" />
@@ -1089,7 +1102,7 @@ function LocationSection() {
 function ContactSection() {
   return (
     <section id="contacto" className="relative overflow-hidden bg-navy px-5 py-20 text-white md:px-8 md:py-24">
-      <img src={photos.bebidaFria} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-25" />
+      <SafeImage src={photos.bebidaFria} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-25" />
       <div className="absolute inset-0 bg-navy/82" />
       <div className="relative z-10 mx-auto max-w-4xl text-center">
         <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-honey">CTA</p>
@@ -1174,7 +1187,7 @@ function Footer() {
   );
 }
 
-function PageFrame({ children, showContact = true }) {
+function PageFrame({ children, showContact = false }) {
   return (
     <div className="pt-20">
       {children}
@@ -1302,6 +1315,12 @@ export default function App() {
     const meta = routeMeta[currentPath];
     document.title = currentPath === '/' || !meta ? 'Tartelier | Repostería Artesanal' : `${meta.eyebrow} | Tartelier`;
   }, [currentPath]);
+
+  useEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+  }, []);
 
   return (
     <div className="min-h-screen overflow-x-hidden font-sans">
