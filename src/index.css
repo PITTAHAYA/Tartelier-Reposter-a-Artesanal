@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color: #202034;
+  background: #fffbf4;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+section[id] {
+  scroll-margin-top: 5rem;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background:
+    radial-gradient(circle at top left, rgba(232, 182, 187, 0.22), transparent 32rem),
+    linear-gradient(180deg, #fffbf4 0%, #f6efe5 100%);
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.grain {
+  position: relative;
+}
+
+.grain::after {
+  pointer-events: none;
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.06;
+  background-image:
+    linear-gradient(90deg, rgba(15, 30, 58, 0.12) 1px, transparent 1px),
+    linear-gradient(rgba(15, 30, 58, 0.08) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mix-blend-mode: multiply;
+}
+
+.hero-mask {
+  background:
+    linear-gradient(90deg, rgba(15, 30, 58, 0.84), rgba(15, 30, 58, 0.44) 46%, rgba(15, 30, 58, 0.08)),
+    linear-gradient(0deg, rgba(15, 30, 58, 0.38), transparent 48%);
+}
+
+.photo-finish {
+  filter: saturate(0.96) contrast(1.04) brightness(0.99);
+}
+
+.curved-title {
+  letter-spacing: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    animation: reveal 760ms ease both;
+  }
+
+  @keyframes reveal {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
