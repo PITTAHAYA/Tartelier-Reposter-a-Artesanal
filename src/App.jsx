@@ -59,6 +59,7 @@ const photos = {
 const TARTELIER_INSTAGRAM_URL = 'https://www.instagram.com/tartelier_ec/';
 const TARTELIER_MAPS_URL = 'https://www.google.com/maps?q=-1.251083,-78.640111';
 const TARTELIER_COORDINATES = '1°15\'03.9"S 78°38\'24.4"W';
+const PITTAHAYA_URL = 'https://www.pittahaya.com';
 
 const navItems = [
   ['Carta', '/carta'],
@@ -1185,6 +1186,33 @@ function Footer() {
             </a>
           </div>
         </div>
+      </div>
+
+      <div className="mx-auto mt-10 max-w-7xl border-t border-navy/10 pt-8">
+        <div className="flex flex-col gap-4 text-xs leading-6 text-ink/60 md:flex-row md:items-center md:justify-between">
+          <p>
+            © {new Date().getFullYear()} <span className="font-semibold text-navy">Tartelier</span> · Repostería Artesanal.
+            Todos los derechos reservados.
+          </p>
+          <p>
+            Sitio web hecho con cariño por{' '}
+            <a
+              href={PITTAHAYA_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="font-semibold text-honey underline-offset-4 hover:underline"
+            >
+              Pittahaya
+            </a>
+            .
+          </p>
+        </div>
+        <p className="mt-4 max-w-3xl text-[11px] leading-5 text-ink/45">
+          La marca «Tartelier», su logotipo, así como los textos, fotografías, recetas, nombres de productos
+          y el diseño de este sitio son propiedad de Tartelier y están protegidos por las leyes de propiedad
+          intelectual y derechos de autor. Queda prohibida su reproducción, copia, distribución o uso, total o
+          parcial, por cualquier medio, sin autorización previa y por escrito de Tartelier.
+        </p>
       </div>
     </footer>
   );
